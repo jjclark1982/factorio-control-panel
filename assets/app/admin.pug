@@ -5,52 +5,74 @@ html
   head
     meta(charset="utf-8")
     title= title
+    link(rel='stylesheet' href='/static/pure.css')
+    style.
+      form { margin: 1em; float: left; }
+      .container { max-width: 800px; margin: auto; }
   body
-    p
-      a(href="saves") Saves
-    p
-      a(href="mods") Mods
+    .container
+      h1= title
 
-    form(method="POST" action="create-save")
-      fieldset
-        legend Create Save
-        label Name:
-          input(type="text" name="saveName")
-        br
-        button(type="submit") Create
+      p
+        a(href="saves") Saves
+      p
+        a(href="mods") Mods
 
-    - if (runningServer == null)
-      form(method="POST" action="start-server")
+      form.pure-form.pure-form-stacked(method="POST" action="create-save")
         fieldset
-          legend Server is not Running
-          label Save Name:
+          legend Saved Games
+          - if (saves.length == 0)
+            i None
+          - else
+            ul
+              each save in saves
+                li
+                  a(href=save.path)= save.title
+          br
+          br
+          label Create new save file:
             input(type="text" name="saveName")
           br
-          label Latency (ms):
-            input(type="text" name="latencyMS")
+          button(type="submit") Create
           br
-          label Autosave Interval (minutes):
-            input(type="text" name="autosaveInterval")
           br
-          label Autosave Slots:
-            input(type="text" name="autosaveSlots")
+          label Upload save file:
+            input(type="file" name="saveFile")
           br
-          label
-            input(type="checkbox" name="disallowCommands")
-            | Disallow Commands
-          br
-          label
-            input(type="checkbox" name="peerToPeer")
-            | Use Peer-to-Peer
-          br
-          label
-            input(type="checkbox" name="noAutoPause")
-            | No Auto-Pause
-          br
-          button(type="submit") Start Server
+          button(type="submit") Upload
 
-    - else
-      form(method="POST" action="stop-server")
-        fieldset
-          legend Server is Running
-          button(type="submit") Stop
+      - if (runningServer == null)
+        form.pure-form.pure-form-stacked(method="POST" action="start-server")
+          fieldset
+            legend Server is not running
+            label Start from save file:
+              select(name='saveName')
+                each save in saves
+                  option(value=save.title)= save.title
+            br
+            label Latency (ms):
+              input(type="text" name="latencyMS")
+            br
+            label Autosave Interval (minutes):
+              input(type="text" name="autosaveInterval" placeholder="2")
+            br
+            label Autosave Slots:
+              input(type="text" name="autosaveSlots" placeholder="3")
+            br
+            label
+              input(type="checkbox" name="disallowCommands")
+              |  Disallow Commands
+            label
+              input(type="checkbox" name="peerToPeer")
+              |  Use Peer-to-Peer
+            label
+              input(type="checkbox" name="noAutoPause")
+              |  No Auto-pause
+            br
+            button(type="submit") Start Server
+
+      - else
+        form.pure-form.pure-form-stacked(method="POST" action="stop-server")
+          fieldset
+            legend Server is Running
+            button(type="submit") Stop
