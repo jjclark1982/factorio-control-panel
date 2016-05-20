@@ -1,0 +1,18 @@
+{
+  "name": "factorio-server",
+  "version": "1.0.0",
+  "description": "Web server to manage headless Factorio game server",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Jesse Clark <jjclark1982@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^1.15.1",
+    "event-stream": "^3.3.2",
+    "express": "^4.13.4",
+    "pug": "^2.0.0-alpha7",
+    "serve-index": "^1.7.3"
+  }
+}

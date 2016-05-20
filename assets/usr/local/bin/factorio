@@ -1,0 +1,3 @@
+#!/bin/sh
+
+/usr/local/factorio/bin/x64/factorio $@

@@ -1,0 +1,28 @@
+<!doctype html>
+<html>
+<head>
+  <title>Factorio Server</title>
+</head>
+<body>
+  <p><a href="saves">Saves</a></p>
+  <p><a href="mods">Mods</a></p>
+
+  <p>Running Server:<br></p>
+
+  <form method="POST" action="create-save">
+    <fieldset>
+      <legend>Create Save</legend>
+      <label>Name: <input type="text" name="saveName"></label>
+      <button type="submit">Create</button>
+    </fieldset>
+  </form>
+
+  <form method="POST" action="start-server">
+    <fieldset>
+      <legend>Start Server</legend>
+      <label>Save Name: <input type="text" name="saveName"></label>
+      <button type="submit">Start</button>
+    </fieldset>
+  </form>
+</body>
+</html>

@@ -1,0 +1,56 @@
+- title = "Factorio Server"
+
+doctype html
+html
+  head
+    meta(charset="utf-8")
+    title= title
+  body
+    p
+      a(href="saves") Saves
+    p
+      a(href="mods") Mods
+
+    form(method="POST" action="create-save")
+      fieldset
+        legend Create Save
+        label Name:
+          input(type="text" name="saveName")
+        br
+        button(type="submit") Create
+
+    - if (runningServer == null)
+      form(method="POST" action="start-server")
+        fieldset
+          legend Server is not Running
+          label Save Name:
+            input(type="text" name="saveName")
+          br
+          label Latency (ms):
+            input(type="text" name="latencyMS")
+          br
+          label Autosave Interval (minutes):
+            input(type="text" name="autosaveInterval")
+          br
+          label Autosave Slots:
+            input(type="text" name="autosaveSlots")
+          br
+          label
+            input(type="checkbox" name="disallowCommands")
+            | Disallow Commands
+          br
+          label
+            input(type="checkbox" name="peerToPeer")
+            | Use Peer-to-Peer
+          br
+          label
+            input(type="checkbox" name="noAutoPause")
+            | No Auto-Pause
+          br
+          button(type="submit") Start Server
+
+    - else
+      form(method="POST" action="stop-server")
+        fieldset
+          legend Server is Running
+          button(type="submit") Stop
