@@ -1,8 +1,15 @@
 {
-  "name": "factorio-server",
+  "name": "factorio-control-panel",
   "version": "1.0.0",
   "description": "Web server to manage headless Factorio game server",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jjclark1982/factorio-control-panel.git"
+  },
   "main": "server.js",
+  "bin": {
+    "factorio-control-panel": "server.js"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
