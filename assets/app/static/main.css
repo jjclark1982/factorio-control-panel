@@ -1,0 +1,36 @@
+body {
+    background: #222;
+    color: #bbb;
+}
+b {
+    color: white;
+}
+a {
+    color: #cc7627;
+}
+a:hover {
+    color: #e67e23;
+}
+input[type="text"],button,select {
+    color: #666;
+}
+h1,h2,h3,h4,h5,h6 {
+    color: #ddd;
+    text-align: center;
+}
+.pure-form legend {
+    color: #ddd;
+}
+.container {
+    max-width: 1024px;
+    margin: auto;
+}
+.pane {
+    background: #444;
+    padding: 0 0.5em;
+    margin: 0.5em;
+    border-top: 2px solid #666;
+    border-left: 2px solid #555;
+    border-right: 2px solid #272727;
+    border-bottom: 2px solid #171717;
+}

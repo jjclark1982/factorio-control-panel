@@ -3,13 +3,13 @@
 var express = require('express');
 var serveIndex = require('serve-index');
 var bodyParser = require('body-parser');
-var child_process = require('child_process');
-var es = require('event-stream');
-var pug = require('pug');
 var basicAuth = require('basic-auth');
 var crypto = require('crypto');
-var vfs = require('vinyl-fs');
+var pug = require('pug');
 var Promise = require('bluebird');
+
+var runCommand = require('./runCommand');
+var listFiles = Promise.promisify(require('./listFiles'));
 
 var paths = {};
 paths.base = process.env.FACTORIO_DIR || '/usr/local/factorio';
@@ -32,27 +32,15 @@ app.use('/static', express.static(__dirname+'/static'));
 var admin = express.Router();
 app.use('/', admin);
 
-function listFiles(path, mountPath, callback) {
-    var files = [];
-    vfs.src(path, {read: false})
-    .pipe(es.through(function(file){
-        file.dirname = mountPath;
-        files.push(file);
-    }, function(end){
-        callback(null, files);
-    }));
-}
-var listFilesAsync = Promise.promisify(listFiles);
-
 admin.get('/', (req, res, next)=>{
     var saves = [];
     var mods = [];
     Promise.all([
-        listFilesAsync(paths.saves+'/*.zip', 'saves')
+        listFiles(paths.saves+'/*.zip', 'saves')
         .then((files)=>{
             saves = files;
         }),
-        listFilesAsync(paths.mods+'/*.zip', 'mods')
+        listFiles(paths.mods+'/*.zip', 'mods')
         .then((files)=>{
             mods = files;
         })
@@ -71,10 +59,6 @@ admin.get('/', (req, res, next)=>{
         html = adminTemplate(context);
         res.send(html);        
      });
-});
-
-admin.get('/version', (req, res, next)=>{
-    res.runCommand(paths.exe, ['--version']);
 });
 
 admin.use((req, res, next)=>{
@@ -97,32 +81,13 @@ admin.use((req, res, next)=>{
     })
 });
 
-admin.use(bodyParser.urlencoded({extended: false}));
+admin.use(runCommand);
 
-admin.use((req, res, next)=>{
-    res.runCommand = (cmd, args, env)=> {
-        res.type('html');
-        res.writeContinue();
-        for (var i = 0; i < 20; i++) {
-            res.write("                                                  \n");
-        }
-        res.write('<!DOCTYPE html><html><body><pre>');
-        res.write('<b>$ '+cmd+' '+args.join(' ')+'\n</b>');
-
-        var child = child_process.spawn(cmd, args, env);
-        es.merge([child.stdout, child.stderr])
-        .pipe(es.through(function(text){
-            this.emit('data', text);
-        }, function(end){
-            this.emit('data', '</pre><a href=".">Back to Control Panel</a>');
-            this.emit('end');
-        }))
-        .pipe(res);
-
-        return child;
-    };
-    next();
+admin.get('/version', (req, res, next)=>{
+    res.runCommand(paths.exe, ['--version']);
 });
+
+admin.use(bodyParser.urlencoded({extended: false}));
 
 admin.post('/create-save', (req, res, next)=>{
     var saveName = req.body.saveName;
@@ -196,8 +161,6 @@ admin.post('/stop-server', (req, res, next)=>{
         res.send("server stopped, maybe");
     }
 });
-
-app.use('/', express.static(__dirname));
 
 var server = app.listen(process.env.PORT || 8000, ()=>{
     console.log('HTTP server is running on port %s', server.address().port);
