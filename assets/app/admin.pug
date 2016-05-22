@@ -39,7 +39,7 @@ html
               ul
                 each mod in mods
                   li
-                    a(href=mod.path)= mod.title
+                    a(href=mod.path)= mod.stem
 
             form.pure-form.pure-form-stacked(method="POST" action="transload-mod")
               fieldset
@@ -66,7 +66,7 @@ html
               ul
                 each save in saves
                   li
-                    a(href=save.path)= save.title
+                    a(href=save.path)= save.stem
 
             form.pure-form.pure-form-stacked(method="POST" action="create-save")
               fieldset
@@ -100,7 +100,7 @@ html
                   label Save file:
                     select(name='saveName')
                       each save in saves
-                        option(value=save.title)= save.title
+                        option(value=save.stem)= save.stem
                   br
                   label Latency (ms):
                     input(type="text" name="latencyMS")

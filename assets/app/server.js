@@ -6,12 +6,13 @@ var bodyParser = require('body-parser');
 var child_process = require('child_process');
 var es = require('event-stream');
 var pug = require('pug');
-var fs = require('fs');
 var basicAuth = require('basic-auth');
 var crypto = require('crypto');
+var vfs = require('vinyl-fs');
+var Promise = require('bluebird');
 
 var paths = {};
-paths.base = '/usr/local/factorio';
+paths.base = process.env.FACTORIO_DIR || '/usr/local/factorio';
 paths.saves = paths.base+'/saves';
 paths.mods = paths.base+'/mods';
 paths.exe = paths.base+'/bin/x64/factorio';
@@ -31,37 +32,45 @@ app.use('/static', express.static(__dirname+'/static'));
 var admin = express.Router();
 app.use('/', admin);
 
+function listFiles(path, mountPath, callback) {
+    var files = [];
+    vfs.src(path, {read: false})
+    .pipe(es.through(function(file){
+        file.dirname = mountPath;
+        files.push(file);
+    }, function(end){
+        callback(null, files);
+    }));
+}
+var listFilesAsync = Promise.promisify(listFiles);
+
 admin.get('/', (req, res, next)=>{
-    fs.readdir(paths.saves, (err, files)=>{
-        if (err && err.code != 'ENOENT') {
-            return next(err);
-        }
-        files = files || [];
-        var saves = [];
-        for (var i = 0; i < files.length; i++) {
-            var filename = files[i];
-            if (filename[0] == '.') {
-                continue;
-            }
-            var save = {
-                path: '/saves/'+filename,
-                title: filename.replace(/\.zip$/, '')
-            }
-            saves.push(save);
-        }
+    var saves = [];
+    var mods = [];
+    Promise.all([
+        listFilesAsync(paths.saves+'/*.zip', 'saves')
+        .then((files)=>{
+            saves = files;
+        }),
+        listFilesAsync(paths.mods+'/*.zip', 'mods')
+        .then((files)=>{
+            mods = files;
+        })
+    ])
+    .then(()=>{
         var options = {
             pretty: true,
-            cache: false
+            cache: process.env.NODE_ENV != 'debug'
         };
         adminTemplate = pug.compileFile('./admin.pug', options);
         context = {
             runningServer: runningServer,
             saves: saves,
-            mods: []
+            mods: mods
         };
         html = adminTemplate(context);
-        res.send(html);
-    });
+        res.send(html);        
+     });
 });
 
 admin.get('/version', (req, res, next)=>{
