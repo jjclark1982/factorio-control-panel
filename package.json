@@ -22,9 +22,9 @@
     "body-parser": "^1.15.1",
     "event-stream": "^3.3.2",
     "express": "^4.13.4",
+    "formidable": "^1.0.17",
     "pug": "^2.0.0-alpha7",
     "purecss": "^0.6.0",
-    "serve-index": "^1.7.3",
     "vinyl-fs": "^2.4.3"
   }
 }

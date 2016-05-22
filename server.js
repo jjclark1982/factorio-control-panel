@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 
 var express = require('express');
-var serveIndex = require('serve-index');
 var bodyParser = require('body-parser');
 var basicAuth = require('basic-auth');
+var multer = require('multer');
 var crypto = require('crypto');
 var pug = require('pug');
 var Promise = require('bluebird');
@@ -24,9 +24,7 @@ var runningServer = null;
 
 var app = express();
 
-app.use('/saves', serveIndex(paths.saves, {icons: true}));
 app.use('/saves', express.static(paths.saves));
-app.use('/mods', serveIndex(paths.mods, {icons: true}));
 app.use('/mods', express.static(paths.mods));
 app.use('/static', express.static(__dirname+'/static'));
 var admin = express.Router();
@@ -99,16 +97,46 @@ admin.post('/create-save', (req, res, next)=>{
     }
 });
 
-admin.post('/upload-save', (req, res, next)=>{
-    res.status(501).send("Not implemented");
+admin.post('/saves', (req, res, next)=>{
+    var storage = multer.diskStorage({
+        destination: (req, file, callback)=>{
+            callback(null, paths.saves);
+        },
+        filename: (req, file, callback)=>{
+            callback(null, file.originalname);
+        }
+    });
+    var upload = multer({storage: storage}).single('file');
+    upload(req, res, (err)=>{
+        if (err) {
+            return next(err);
+        }
+        res.setHeader('Refresh', '1;.')
+        res.redirect(201, '.');
+    });
 });
 
 admin.post('/transload-mod', (req, res, next)=>{
     res.status(501).send("Not implemented");
 });
 
-admin.post('/upload-mod', (req, res, next)=>{
-    res.status(501).send("Not implemented");
+admin.post('/mods', (req, res, next)=>{
+    var storage = multer.diskStorage({
+        destination: (req, file, callback)=>{
+            callback(null, paths.mods);
+        },
+        filename: (req, file, callback)=>{
+            callback(null, file.originalname);
+        }
+    });
+    var upload = multer({storage: storage}).single('file');
+    upload(req, res, (err)=>{
+        if (err) {
+            return next(err);
+        }
+        res.setHeader('Refresh', '1;.')
+        res.redirect(201, '.');
+    });
 });
 
 admin.post('/start-server', (req, res, next)=>{

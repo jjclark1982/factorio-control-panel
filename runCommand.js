@@ -28,8 +28,12 @@ module.exports.pipeOutput = pipeOutput;
 function middleware(req, res, next) {
     res.runCommand = (cmd, args, env)=> {
         var child = child_process.spawn(cmd, args, env);
+        child.on('error', (err)=>{
+            res.write('<b>'+err.toString()+'</b>');
+        });
+
         pipeOutput(child, res);
-        res.write('<b>$ '+cmd+' '+args.join(' ')+'\n</b>');
+        res.write('<b>$ '+cmd+' '+args.join(' ')+'</b>\n');
 
         return child;
     };

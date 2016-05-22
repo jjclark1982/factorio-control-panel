@@ -14,8 +14,7 @@ html
       .pure-g
         .pure-u-1-3
           .pane
-            h3
-              a(href="mods") Mods
+            h3 Mods
             - if (mods.length == 0)
               p
                 i None
@@ -32,17 +31,16 @@ html
                   input(type="text" name="modURL")
                 br
                 button(type="submit") Transload
-            form.pure-form.pure-form-stacked(method="POST" action="upload-mod")
+            form.pure-form.pure-form-stacked(method="POST" action="mods" enctype="multipart/form-data")
               fieldset
                 legend Upload a mod
-                input(type="file" name="modFile")
+                input(type="file" name="file")
                 br
                 button(type="submit") Upload
 
         .pure-u-1-3
           .pane
-            h3
-              a(href="saves") Saved Games
+            h3 Saved Games
             - if (saves.length == 0)
               p
                 i None
@@ -59,10 +57,10 @@ html
                   input(type="text" name="saveName")
                 br
                 button(type="submit") Create
-            form.pure-form.pure-form-stacked(method="POST" action="upload-save")
+            form.pure-form.pure-form-stacked(method="POST" action="saves" enctype="multipart/form-data")
               fieldset
                 legend Upload a save file
-                input(type="file" name="saveFile")
+                input(type="file" name="file")
                 br
                 button(type="submit") Upload
 
