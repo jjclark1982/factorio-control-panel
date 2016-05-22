@@ -1,4 +1,4 @@
-- title = "Factorio Server"
+- title = "Factorio Server Control Panel"
 
 doctype html
 html
@@ -7,72 +7,118 @@ html
     title= title
     link(rel='stylesheet' href='/static/pure.css')
     style.
-      form { margin: 1em; float: left; }
-      .container { max-width: 800px; margin: auto; }
+      body { background: #222; color: #bbb; }
+      a { color: #cc7627; }
+      a:hover { color: #e67e23; }
+      input[type="text"],button,select { color: #666; }
+      h1,h2,h3,h4,h5,h6 { color: #ddd; text-align: center; }
+      .pure-form legend { color: #ddd; }
+      .container { max-width: 980px; margin: auto; }
+      .pane {
+        background: #444;
+        padding: 1px 0.5em;
+        margin: 0.5em;
+        border-top: 2px solid #666;
+        border-left: 2px solid #333;
+        border-right: 2px solid #333;
+        border-bottom: 2px solid #272727;
+      }
   body
     .container
       h1= title
 
-      p
-        a(href="saves") Saves
-      p
-        a(href="mods") Mods
+      .pure-g
+        .pure-u-1-3
+          .pane
+            h3
+              a(href="mods") Mods
+            - if (mods.length == 0)
+              p
+                i None
+            - else
+              ul
+                each mod in mods
+                  li
+                    a(href=mod.path)= mod.title
 
-      form.pure-form.pure-form-stacked(method="POST" action="create-save")
-        fieldset
-          legend Saved Games
-          - if (saves.length == 0)
-            i None
-          - else
-            ul
-              each save in saves
-                li
-                  a(href=save.path)= save.title
-          br
-          br
-          label Create new save file:
-            input(type="text" name="saveName")
-          br
-          button(type="submit") Create
-          br
-          br
-          label Upload save file:
-            input(type="file" name="saveFile")
-          br
-          button(type="submit") Upload
+            form.pure-form.pure-form-stacked(method="POST" action="transload-mod")
+              fieldset
+                legend Install a mod
+                label URL:
+                  input(type="text" name="modURL")
+                br
+                button(type="submit") Transload
+            form.pure-form.pure-form-stacked(method="POST" action="upload-mod")
+              fieldset
+                legend Upload a mod
+                input(type="file" name="modFile")
+                br
+                button(type="submit") Upload
 
-      - if (runningServer == null)
-        form.pure-form.pure-form-stacked(method="POST" action="start-server")
-          fieldset
-            legend Server is not running
-            label Start from save file:
-              select(name='saveName')
+        .pure-u-1-3
+          .pane
+            h3
+              a(href="saves") Saved Games
+            - if (saves.length == 0)
+              p
+                i None
+            - else
+              ul
                 each save in saves
-                  option(value=save.title)= save.title
-            br
-            label Latency (ms):
-              input(type="text" name="latencyMS")
-            br
-            label Autosave Interval (minutes):
-              input(type="text" name="autosaveInterval" placeholder="2")
-            br
-            label Autosave Slots:
-              input(type="text" name="autosaveSlots" placeholder="3")
-            br
-            label
-              input(type="checkbox" name="disallowCommands")
-              |  Disallow Commands
-            label
-              input(type="checkbox" name="peerToPeer")
-              |  Use Peer-to-Peer
-            label
-              input(type="checkbox" name="noAutoPause")
-              |  No Auto-pause
-            br
-            button(type="submit") Start Server
+                  li
+                    a(href=save.path)= save.title
 
-      - else
-        form.pure-form.pure-form-stacked(method="POST" action="stop-server")
-          fieldset
-            legend Server is Running
-            button(type="submit") Stop
+            form.pure-form.pure-form-stacked(method="POST" action="create-save")
+              fieldset
+                legend Create new save file
+                label Name:
+                  input(type="text" name="saveName")
+                br
+                button(type="submit") Create
+            form.pure-form.pure-form-stacked(method="POST" action="upload-save")
+              fieldset
+                legend Upload a save file
+                input(type="file" name="saveFile")
+                br
+                button(type="submit") Upload
+
+        .pure-u-1-3
+          .pane
+            h3 Game Server
+            - if (runningServer)
+              form.pure-form.pure-form-stacked(method="POST" action="stop-server")
+                fieldset
+                  legend Server is Running
+                  p Started at:
+                  p= runningServer.startDate
+                  button(type="submit") Stop
+
+            - else
+              form.pure-form.pure-form-stacked(method="POST" action="start-server")
+                fieldset
+                  legend Server is not running
+                  label Save file:
+                    select(name='saveName')
+                      each save in saves
+                        option(value=save.title)= save.title
+                  br
+                  label Latency (ms):
+                    input(type="text" name="latencyMS")
+                  br
+                  label Autosave Interval (minutes):
+                    input(type="text" name="autosaveInterval" placeholder="2")
+                  br
+                  label Autosave Slots:
+                    input(type="text" name="autosaveSlots" placeholder="3")
+                  br
+                  label
+                    input(type="checkbox" name="disallowCommands")
+                    |  Disallow Commands
+                  label
+                    input(type="checkbox" name="peerToPeer")
+                    |  Use Peer-to-Peer
+                  label
+                    input(type="checkbox" name="noAutoPause")
+                    |  No Auto-pause
+                  br
+                  button(type="submit") Start Server

@@ -51,7 +51,8 @@ admin.get('/', function(req, res, next){
         adminTemplate = pug.compileFile('./admin.pug', options);
         context = {
             runningServer: runningServer,
-            saves: saves
+            saves: saves,
+            mods: []
         };
         html = adminTemplate(context);
         res.send(html);
@@ -81,7 +82,7 @@ admin.use(function(req, res, next){
             if (code != 0) {
                 res.write('<b>Error '+code+"</b>\n");
             }
-            res.write('</pre><a href=".">Back to Admin Panel</a>');
+            res.write('</pre><a href=".">Back to Control Panel</a>');
             res.end();
         });
         return child;
@@ -91,7 +92,24 @@ admin.use(function(req, res, next){
 
 admin.post('/create-save', function(req, res, next){
     var saveName = req.body.saveName;
-    res.runCommand(paths.exe, ['--create', saveName]);
+    if (saveName) {
+        res.runCommand(paths.exe, ['--create', saveName]);
+    }
+    else {
+        res.status(400).send("You must specify a save name");
+    }
+});
+
+admin.post('/upload-save', function(req, res, next){
+    res.status(501).send("Not implemented");
+});
+
+admin.post('/transload-mod', function(req, res, next){
+    res.status(501).send("Not implemented");
+});
+
+admin.post('/upload-mod', function(req, res, next){
+    res.status(501).send("Not implemented");
 });
 
 admin.post('/start-server', function(req, res, next){
@@ -104,7 +122,8 @@ admin.post('/start-server', function(req, res, next){
             saveName: '--start-server',
             latencyMS: '--latency-ms',
             autosaveInterval: '--autosave-interval',
-            autosaveSlots: '--autosave-slots'
+            autosaveSlots: '--autosave-slots',
+            port: '--port'
         }
         var supportedFlags = {
             disallowCommands: '--disallow-commands',
@@ -127,6 +146,7 @@ admin.post('/start-server', function(req, res, next){
 
         runningServer = res.runCommand(paths.exe, args);
         runningServer.startDate = new Date();
+        runningServer.port = req.body.port || '34197';
         runningServer.on('exit', function(code, signal){
             runningServer = null;
         });
@@ -146,5 +166,5 @@ admin.post('/stop-server', function(req, res, next){
 app.use('/', express.static(__dirname));
 
 var server = app.listen(process.env.PORT || 8000, function(){
-    console.log('server is running at %s', server.address().port);
+    console.log('HTTP server is running on port %s', server.address().port);
 });
