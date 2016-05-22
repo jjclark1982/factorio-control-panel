@@ -59,6 +59,18 @@ admin.get('/', function(req, res, next){
     });
 });
 
+admin.get('/version', function(req, res, next){
+    res.runCommand(paths.exe, ['--version']);
+});
+
+admin.use(function(req, res, next){
+    // require password to make changes
+    if (req.method == POST) {
+
+    }
+    next();
+});
+
 admin.use(bodyParser.urlencoded({extended: false}));
 
 admin.use(function(req, res, next){
@@ -75,16 +87,12 @@ admin.use(function(req, res, next){
         es.merge([child.stdout, child.stderr])
         .pipe(es.through(function(text){
             this.emit('data', text);
-        }, function(end){}))
+        }, function(end){
+            this.emit('data', '</pre><a href=".">Back to Control Panel</a>');
+            this.emit('end');
+        }))
         .pipe(res);
 
-        child.on('exit', function(code, signal){
-            if (code != 0) {
-                res.write('<b>Error '+code+"</b>\n");
-            }
-            res.write('</pre><a href=".">Back to Control Panel</a>');
-            res.end();
-        });
         return child;
     };
     next();
