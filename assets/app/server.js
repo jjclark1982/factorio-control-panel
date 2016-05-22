@@ -7,12 +7,17 @@ var child_process = require('child_process');
 var es = require('event-stream');
 var pug = require('pug');
 var fs = require('fs');
+var basicAuth = require('basic-auth');
+var crypto = require('crypto');
 
 var paths = {};
 paths.base = '/usr/local/factorio';
 paths.saves = paths.base+'/saves';
 paths.mods = paths.base+'/mods';
 paths.exe = paths.base+'/bin/x64/factorio';
+
+var salt = crypto.randomBytes(32);
+var passwordHash = crypto.pbkdf2Sync(process.env.ADMIN_PASSWORD || '', salt, 10000, 512, 'sha512');
 
 var runningServer = null;
 
@@ -26,8 +31,8 @@ app.use('/static', express.static(__dirname+'/static'));
 var admin = express.Router();
 app.use('/', admin);
 
-admin.get('/', function(req, res, next){
-    fs.readdir(paths.saves, function(err, files){
+admin.get('/', (req, res, next)=>{
+    fs.readdir(paths.saves, (err, files)=>{
         if (err && err.code != 'ENOENT') {
             return next(err);
         }
@@ -59,22 +64,34 @@ admin.get('/', function(req, res, next){
     });
 });
 
-admin.get('/version', function(req, res, next){
+admin.get('/version', (req, res, next)=>{
     res.runCommand(paths.exe, ['--version']);
 });
 
-admin.use(function(req, res, next){
-    // require password to make changes
-    if (req.method == POST) {
-
+admin.use((req, res, next)=>{
+    // allow read-only methods
+    if (['GET', 'HEAD', 'OPTIONS'].indexOf(req.method) !== -1) {
+        return next();
     }
-    next();
+    // require password for other methods
+    var user = basicAuth(req) || {pass: ''};
+    crypto.pbkdf2(user.pass, salt, 10000, 512, 'sha512', (err, hash)=>{
+        if (err) {
+            return next(err);
+        }
+        if (Buffer.compare(hash, passwordHash) !== 0) {
+            res.set('WWW-Authenticate', 'Basic realm=Authorization Required');
+            res.sendStatus(401);
+        }
+        // password was correct
+        next();
+    })
 });
 
 admin.use(bodyParser.urlencoded({extended: false}));
 
-admin.use(function(req, res, next){
-    res.runCommand = function(cmd, args, env) {
+admin.use((req, res, next)=>{
+    res.runCommand = (cmd, args, env)=> {
         res.type('html');
         res.writeContinue();
         for (var i = 0; i < 20; i++) {
@@ -98,7 +115,7 @@ admin.use(function(req, res, next){
     next();
 });
 
-admin.post('/create-save', function(req, res, next){
+admin.post('/create-save', (req, res, next)=>{
     var saveName = req.body.saveName;
     if (saveName) {
         res.runCommand(paths.exe, ['--create', saveName]);
@@ -108,19 +125,19 @@ admin.post('/create-save', function(req, res, next){
     }
 });
 
-admin.post('/upload-save', function(req, res, next){
+admin.post('/upload-save', (req, res, next)=>{
     res.status(501).send("Not implemented");
 });
 
-admin.post('/transload-mod', function(req, res, next){
+admin.post('/transload-mod', (req, res, next)=>{
     res.status(501).send("Not implemented");
 });
 
-admin.post('/upload-mod', function(req, res, next){
+admin.post('/upload-mod', (req, res, next)=>{
     res.status(501).send("Not implemented");
 });
 
-admin.post('/start-server', function(req, res, next){
+admin.post('/start-server', (req, res, next)=>{
     var saveName = req.body.saveName;
     if (runningServer != null) {
         res.send("sorry, server is already running");
@@ -155,13 +172,13 @@ admin.post('/start-server', function(req, res, next){
         runningServer = res.runCommand(paths.exe, args);
         runningServer.startDate = new Date();
         runningServer.port = req.body.port || '34197';
-        runningServer.on('exit', function(code, signal){
+        runningServer.on('exit', (code, signal)=>{
             runningServer = null;
         });
     }
 });
 
-admin.post('/stop-server', function(req, res, next){
+admin.post('/stop-server', (req, res, next)=>{
     if (runningServer == null) {
         res.send("sorry, server is not running");
     }
@@ -173,6 +190,6 @@ admin.post('/stop-server', function(req, res, next){
 
 app.use('/', express.static(__dirname));
 
-var server = app.listen(process.env.PORT || 8000, function(){
+var server = app.listen(process.env.PORT || 8000, ()=>{
     console.log('HTTP server is running on port %s', server.address().port);
 });

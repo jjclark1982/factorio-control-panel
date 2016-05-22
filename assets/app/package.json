@@ -9,6 +9,7 @@
   "author": "Jesse Clark <jjclark1982@gmail.com>",
   "license": "MIT",
   "dependencies": {
+    "basic-auth": "^1.0.4",
     "body-parser": "^1.15.1",
     "event-stream": "^3.3.2",
     "express": "^4.13.4",
