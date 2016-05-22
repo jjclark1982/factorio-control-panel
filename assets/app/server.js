@@ -81,7 +81,7 @@ admin.use((req, res, next)=>{
     })
 });
 
-admin.use(runCommand);
+admin.use(runCommand.middleware);
 
 admin.get('/version', (req, res, next)=>{
     res.runCommand(paths.exe, ['--version']);
@@ -157,8 +157,8 @@ admin.post('/stop-server', (req, res, next)=>{
         res.send("sorry, server is not running");
     }
     else {
-        runningServer.kill('SIGTERM')
-        res.send("server stopped, maybe");
+        runCommand.pipeOutput(runningServer, res);
+        runningServer.kill('SIGTERM');
     }
 });
 
