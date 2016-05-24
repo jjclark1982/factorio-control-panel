@@ -73,7 +73,8 @@ html
                 fieldset
                   legend Server is Running
                   p= " UDP port "+runningServer.port
-                  p= " Started at: "+runningServer.startDate
+                  p Started 
+                    time(datetime=runningServer.startDate)= moment(runningServer.startDate).fromNow()
                   button(type="submit") Stop
 
             - else
