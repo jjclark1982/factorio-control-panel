@@ -13,6 +13,7 @@ a:hover {
 }
 input[type="text"],button,select {
     color: #666;
+    background: #ddd;
 }
 h1,h2,h3,h4,h5,h6 {
     color: #ddd;
