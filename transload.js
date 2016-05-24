@@ -20,7 +20,9 @@ function transload(options) {
             var filePath = sysPath.join(options.dir, filename);
             debug('writing %s', filePath);
             response.pipe(fs.createWriteStream(filePath));
-            res.send('installed '+filename);
+
+            res.setHeader('Refresh', '1;.');
+            res.send('Installed '+filename);
         })
     }
 }

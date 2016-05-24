@@ -116,7 +116,7 @@ admin.post('/saves', (req, res, next)=>{
         if (err) {
             return next(err);
         }
-        res.setHeader('Refresh', '1;.')
+        res.setHeader('Refresh', '1;.');
         res.redirect(201, '.');
     });
 });
