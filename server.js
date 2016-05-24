@@ -12,6 +12,7 @@ var Promise = require('bluebird');
 
 var runCommand = require('./runCommand');
 var listFiles = Promise.promisify(require('./listFiles'));
+var transload = require('./transload');
 
 var paths = {};
 paths.base = process.env.FACTORIO_DIR || '/usr/local/factorio';
@@ -120,9 +121,7 @@ admin.post('/saves', (req, res, next)=>{
     });
 });
 
-admin.post('/transload-mod', (req, res, next)=>{
-    res.status(501).send("Not implemented");
-});
+admin.post('/transload-mod', transload({dir: paths.mods}));
 
 admin.post('/mods', (req, res, next)=>{
     var storage = multer.diskStorage({
