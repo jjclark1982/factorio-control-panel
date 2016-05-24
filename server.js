@@ -52,7 +52,7 @@ admin.get('/', (req, res, next)=>{
             pretty: true,
             cache: process.env.NODE_ENV != 'debug'
         };
-        adminTemplate = pug.compileFile('./admin.pug', options);
+        adminTemplate = pug.compileFile(__dirname+'/admin.pug', options);
         context = {
             moment: moment,
             runningServer: runningServer,
