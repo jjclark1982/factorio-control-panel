@@ -4,6 +4,7 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var basicAuth = require('basic-auth');
 var multer = require('multer');
+var morgan = require('morgan');
 var crypto = require('crypto');
 var pug = require('pug');
 var moment = require('moment');
@@ -25,6 +26,7 @@ var runningServer = null;
 
 var app = express();
 
+app.use(morgan('common'));
 app.use('/saves', express.static(paths.saves));
 app.use('/mods', express.static(paths.mods));
 app.use('/static', express.static(__dirname+'/static'));
