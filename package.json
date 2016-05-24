@@ -23,6 +23,7 @@
     "event-stream": "^3.3.2",
     "express": "^4.13.4",
     "formidable": "^1.0.17",
+    "moment": "^2.13.0",
     "pug": "^2.0.0-alpha7",
     "purecss": "^0.6.0",
     "vinyl-fs": "^2.4.3"

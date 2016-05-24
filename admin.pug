@@ -49,6 +49,7 @@ html
                 each save in saves
                   li
                     a(href=save.path)= save.stem
+                    time(datetime=save.stat.mtime)= '('+moment(save.stat.mtime).fromNow()+')'
 
             form.pure-form.pure-form-stacked(method="POST" action="create-save")
               fieldset

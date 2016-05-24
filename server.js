@@ -6,6 +6,7 @@ var basicAuth = require('basic-auth');
 var multer = require('multer');
 var crypto = require('crypto');
 var pug = require('pug');
+var moment = require('moment');
 var Promise = require('bluebird');
 
 var runCommand = require('./runCommand');
@@ -50,6 +51,7 @@ admin.get('/', (req, res, next)=>{
         };
         adminTemplate = pug.compileFile('./admin.pug', options);
         context = {
+            moment: moment,
             runningServer: runningServer,
             saves: saves,
             mods: mods
