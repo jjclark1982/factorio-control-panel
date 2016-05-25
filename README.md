@@ -7,14 +7,14 @@ Web admin interface for [Factorio](http://factorio.com/) headless game server
 
 - Install the node module
 
-    npm install -g factorio-control-panel
+        npm install -g factorio-control-panel
     
 - Set environment variables and start the web server
     
-    export FACTORIO_DIR='/usr/local/factorio'
-    export ADMIN_PASSWORD='******'
-    export PORT=8000
-    factorio-control-panel
+        export FACTORIO_DIR='/usr/local/factorio'
+        export ADMIN_PASSWORD='******'
+        export PORT=8000
+        factorio-control-panel
 
 ### Installation (Docker container)
 

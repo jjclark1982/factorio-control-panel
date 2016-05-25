@@ -13,11 +13,12 @@ env:
     - FACTORIO_VERSION=0.12.33
 
 before_install:
+  - export PANEL_VERSION=$(node -e 'console.log(require("./package").version)')
   - docker login -e="$DOCKER_EMAIL" -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
   - docker pull "jjclark/factorio" || echo "ok"
 
 script:
-  - docker build -t "jjclark/factorio" --build-arg FACTORIO_VERSION="$FACTORIO_VERSION" .
+  - docker build -t "jjclark/factorio" .
 
 after_success:
   - docker push "jjclark/factorio"
