@@ -12,7 +12,7 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "postinstall": "ln -s ../node_modules/purecss/build/pure.css static/"
+    "postinstall": "ln -sf ../node_modules/purecss/build/pure.css static/"
   },
   "author": "Jesse Clark <jjclark1982@gmail.com>",
   "license": "MIT",

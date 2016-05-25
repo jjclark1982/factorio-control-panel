@@ -10,9 +10,9 @@ var pug = require('pug');
 var moment = require('moment');
 var Promise = require('bluebird');
 
-var runCommand = require('./runCommand');
-var listFiles = Promise.promisify(require('./listFiles'));
-var transload = require('./transload');
+var runCommand = require('./lib/runCommand');
+var listFiles = Promise.promisify(require('./lib/listFiles'));
+var transload = require('./lib/transload');
 
 var paths = {};
 paths.base = process.env.FACTORIO_DIR || '/usr/local/factorio';
