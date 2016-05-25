@@ -25,4 +25,4 @@ EXPOSE 34197/udp
 VOLUME /usr/local/factorio/saves
 VOLUME /usr/local/factorio/mods
 
-CMD ["npm", "start"]
+CMD node /app
