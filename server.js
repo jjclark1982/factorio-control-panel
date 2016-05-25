@@ -193,6 +193,10 @@ admin.post('/stop-server', (req, res, next)=>{
     }
 });
 
-var server = app.listen(process.env.PORT || 8000, ()=>{
-    console.log('HTTP server is running on port %s', server.address().port);
-});
+module.exports = app;
+
+if (module == require.main) {
+    var server = app.listen(process.env.PORT || 8000, ()=>{
+        console.log('HTTP server is running on port %s', server.address().port);
+    });
+}

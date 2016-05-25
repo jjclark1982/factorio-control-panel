@@ -1,6 +1,8 @@
 # factorio-control-panel
 Web admin interface for [Factorio](http://factorio.com/) headless game server
 
+[![Build Status](https://travis-ci.org/jjclark1982/factorio-control-panel.svg?branch=master)](https://travis-ci.org/jjclark1982/factorio-control-panel)
+
 ### Installation (Linux server)
 
 - Install [Factorio headless server](http://www.factorio.com/download-headless/stable) and [Node.js](https://nodejs.org/en/download/).
