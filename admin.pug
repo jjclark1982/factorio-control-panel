@@ -77,6 +77,13 @@ html
                     time(datetime=runningServer.startDate)= moment(runningServer.startDate).fromNow()
                   button(type="submit") Stop
 
+              form.pure-form.pure-form-stacked(method="POST" action="console-command")
+                fieldset
+                  label Send console command:
+                    input(type="text" name="command")
+                  br
+                  button(type="submit") Send
+
             - else
               form.pure-form.pure-form-stacked(method="POST" action="start-server")
                 fieldset
@@ -95,9 +102,12 @@ html
                   label Autosave Slots:
                     input(type="text" name="autosaveSlots" placeholder="3")
                   br
-                  label
-                    input(type="checkbox" name="disallowCommands")
-                    |  Disallow Commands
+                  label Console Commands
+                    select(name='allowCommands')
+                      option(value='true' selected) Allowed
+                      option(value='false') Disallowed
+                      option(value='admins-only') Admins Only
+                  br
                   label
                     input(type="checkbox" name="peerToPeer")
                     |  Use Peer-to-Peer

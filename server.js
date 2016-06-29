@@ -95,7 +95,8 @@ admin.use(bodyParser.urlencoded({extended: false}));
 admin.post('/create-save', (req, res, next)=>{
     var saveName = req.body.saveName;
     if (saveName) {
-        res.runCommand(paths.exe, ['--create', saveName]);
+        var savePath = paths.saves + '/' + saveName + '.zip';
+        res.runCommand(paths.exe, ['--create', savePath]);
     }
     else {
         res.status(400).send("You must specify a save name");
@@ -143,7 +144,7 @@ admin.post('/mods', (req, res, next)=>{
 });
 
 admin.post('/start-server', (req, res, next)=>{
-    var saveName = req.body.saveName;
+    req.body.saveName = paths.saves + '/' + req.body.saveName + '.zip';
     if (runningServer != null) {
         res.send("sorry, server is already running");
     }
@@ -153,10 +154,10 @@ admin.post('/start-server', (req, res, next)=>{
             latencyMS: '--latency-ms',
             autosaveInterval: '--autosave-interval',
             autosaveSlots: '--autosave-slots',
+            allowCommands: '--allow-commands',
             port: '--port'
         }
         var supportedFlags = {
-            disallowCommands: '--disallow-commands',
             peerToPeer: '--peer-to-peer',
             noAutoPause: '--no-auto-pause'
         }
@@ -190,6 +191,16 @@ admin.post('/stop-server', (req, res, next)=>{
     else {
         runCommand.pipeOutput(runningServer, res);
         runningServer.kill('SIGTERM');
+    }
+});
+
+admin.post('/console-command', (req, res, next)=>{
+    if (runningServer == null) {
+        res.send("sorry, server is not running");
+    }
+    else {
+        runCommand.pipeOutput(runningServer, res);
+        runningServer.stdin.write(req.body.command);
     }
 });
 
