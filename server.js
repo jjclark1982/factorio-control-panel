@@ -19,6 +19,9 @@ paths.base = process.env.FACTORIO_DIR || '/usr/local/factorio';
 paths.saves = paths.base+'/saves';
 paths.mods = paths.base+'/mods';
 paths.exe = paths.base+'/bin/x64/factorio';
+function saveNameToPath(name) {
+    return paths.saves + '/' + name.replace(/^[.]+/g, '_') + '.zip';
+}
 
 var salt = crypto.randomBytes(32);
 var passwordHash = crypto.pbkdf2Sync(process.env.ADMIN_PASSWORD || '', salt, 10000, 512, 'sha512');
@@ -95,8 +98,7 @@ admin.use(bodyParser.urlencoded({extended: false}));
 admin.post('/create-save', (req, res, next)=>{
     var saveName = req.body.saveName;
     if (saveName) {
-        var savePath = paths.saves + '/' + saveName + '.zip';
-        res.runCommand(paths.exe, ['--create', savePath]);
+        res.runCommand(paths.exe, ['--create', saveNameToPath(saveName)]);
     }
     else {
         res.status(400).send("You must specify a save name");
@@ -144,7 +146,7 @@ admin.post('/mods', (req, res, next)=>{
 });
 
 admin.post('/start-server', (req, res, next)=>{
-    req.body.saveName = paths.saves + '/' + req.body.saveName + '.zip';
+    req.body.saveName = saveNameToPath(req.body.saveName);
     if (runningServer != null) {
         res.send("sorry, server is already running");
     }
