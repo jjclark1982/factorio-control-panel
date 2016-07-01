@@ -15,10 +15,15 @@ WORKDIR /app
 RUN npm install --silent --production
 ADD . /app
 
-# Set environment
+# Web control panel port
 ENV PORT 8000
 EXPOSE 8000
 
+# RCON port
+ENV RCON_PORT 27015
+EXPOSE 27015
+
+# Game port
 ENV FACTORIO_PORT 34197
 EXPOSE 34197/udp
 

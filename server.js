@@ -146,7 +146,6 @@ admin.post('/mods', (req, res, next)=>{
 });
 
 admin.post('/start-server', (req, res, next)=>{
-    req.body.saveName = saveNameToPath(req.body.saveName);
     if (runningServer != null) {
         res.send("sorry, server is already running");
     }
@@ -157,12 +156,17 @@ admin.post('/start-server', (req, res, next)=>{
             autosaveInterval: '--autosave-interval',
             autosaveSlots: '--autosave-slots',
             allowCommands: '--allow-commands',
-            port: '--port'
+            port: '--port',
+            rconPort: '--rcon-port',
+            rconPassword: '--rcon-password'
         }
         var supportedFlags = {
             peerToPeer: '--peer-to-peer',
             noAutoPause: '--no-auto-pause'
         }
+        req.body.saveName = saveNameToPath(req.body.saveName);
+        req.body.rconPort = req.body.rconPort || process.env.RCON_PORT;
+        req.body.rconPassword = req.body.rconPassword || process.env.ADMIN_PASSWORD;
 
         var args = [];
         for (var i in supportedArgs) {

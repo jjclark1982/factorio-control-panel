@@ -1,0 +1,17 @@
+{
+  "name": "Name of the game as it will appear in the game listing",
+  "description": "Description of the game that will appear in the listing",
+  "tags": ["game", "tags"],
+  "max_players": "0",
+
+  "_comment_visibility": ["public: Game will be published on the official Factorio matching server",
+                          "lan: Game will be broadcast on LAN",
+                          "hidden: Game will not be published anywhere"],
+  "visibility": "public",
+
+  "_comment_credentials": "Your factorio.com login credentials. Required for games with visibility public",
+  "username": "",
+  "password": "",
+
+  "game_password": ""
+}

@@ -30,3 +30,25 @@ Web admin interface for [Factorio](http://factorio.com/) headless game server
 - Upload save files and mods for the server to use. Other players can download them from here.
 
 - Click "Start Server." This and other admin actions require the `ADMIN_PASSWORD` set above.
+
+
+### TODO
+
+- display working URL when launching (with public-ip module)
+
+- display version on page
+
+- replace template with marko?
+
+- set a "view password"
+
+- rcon support
+
+- installation process to set critical configs manually after starting with them blank
+
+- windows support
+
+- support server-settings.json
+
+- CSRF protection
+
