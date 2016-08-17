@@ -10,7 +10,7 @@ node_js:
 
 env:
   matrix:
-    - FACTORIO_VERSION=0.13.15
+    - FACTORIO_VERSION=0.13.16
 
 before_install:
   - export PANEL_VERSION=$(node -e 'console.log(require("./package").version)')
