@@ -10,7 +10,7 @@ node_js:
 
 env:
   matrix:
-    - FACTORIO_VERSION=0.14.0
+    - FACTORIO_VERSION=0.14.1
 
 before_install:
   - export PANEL_VERSION=$(node -e 'console.log(require("./package").version)')
@@ -22,6 +22,6 @@ script:
   - docker build -t "jjclark/factorio" .
 
 after_success:
-  - docker push "jjclark/factorio"
   - docker tag "jjclark/factorio" "jjclark/factorio:${FACTORIO_VERSION}"
   - docker push "jjclark/factorio:${FACTORIO_VERSION}"
+  - docker push "jjclark/factorio"
