@@ -1,8 +1,8 @@
-FROM node:4.5.0-slim
+FROM node:4.6.1-slim
 MAINTAINER Jesse Clark <docker@jessejohnclark.com>
 
 # Install Factorio
-ENV FACTORIO_VERSION 0.14.14
+ENV FACTORIO_VERSION 0.14.16
 RUN cd /usr/local && \
 curl -sL "http://www.factorio.com/get-download/${FACTORIO_VERSION}/headless/linux64" \
 | tar xzv && \
