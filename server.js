@@ -156,7 +156,6 @@ admin.post('/start-server', (req, res, next)=>{
             latencyMS: '--latency-ms',
             autosaveInterval: '--autosave-interval',
             autosaveSlots: '--autosave-slots',
-            allowCommands: '--allow-commands',
             port: '--port'
         }
         var supportedFlags = {
