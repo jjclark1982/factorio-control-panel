@@ -1,6 +1,6 @@
 {
   "name": "factorio-control-panel",
-  "version": "1.6-dev",
+  "version": "1.6",
   "description": "Web server to manage headless Factorio game server",
   "repository": {
     "type": "git",
