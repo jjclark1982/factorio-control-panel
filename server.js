@@ -63,7 +63,7 @@ admin.get('/', (req, res, next)=>{
             mods: mods
         };
         html = adminTemplate(context);
-        res.send(html);        
+        res.send(html);
      });
 });
 

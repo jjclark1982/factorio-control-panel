@@ -73,7 +73,7 @@ html
                 fieldset
                   legend Server is Running
                   p= " UDP port "+runningServer.port
-                  p Started 
+                  p Started
                     time(datetime=runningServer.startDate)= moment(runningServer.startDate).fromNow()
                   button(type="submit") Stop
 
@@ -101,6 +101,9 @@ html
                   br
                   label Autosave Slots:
                     input(type="text" name="autosaveSlots" placeholder="3")
+                  br
+                  label Port:
+                    input(type="text" name="port" placeholder="34197")
                   br
                   label
                     input(type="checkbox" name="peerToPeer")
