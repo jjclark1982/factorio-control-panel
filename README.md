@@ -1,7 +1,7 @@
 # factorio-control-panel
 Web admin interface for [Factorio](http://factorio.com/) headless game server
 
-[![Build Status](https://travis-ci.org/jjclark1982/factorio-control-panel.svg?branch=master)](https://travis-ci.org/jjclark1982/factorio-control-panel)
+[![Build Status](https://travis-ci.org/Bertieio/factorio-control-panel.svg?branch=master)](https://travis-ci.org/bertieio/factorio-control-panel)
 
 ### Installation (Linux server)
 
@@ -10,9 +10,9 @@ Web admin interface for [Factorio](http://factorio.com/) headless game server
 - Install the node module
 
         npm install -g factorio-control-panel
-    
+
 - Set environment variables and start the web server
-    
+
         export FACTORIO_DIR='/usr/local/factorio'
         export ADMIN_PASSWORD='******'
         export PORT=8000
@@ -22,7 +22,7 @@ Web admin interface for [Factorio](http://factorio.com/) headless game server
 
     docker pull jjclark/factorio
     docker run -d -p 8000:8000 -p 34197:34197/udp --env ADMIN_PASSWORD='******' jjclark/factorio
-    
+
 ### Usage
 
 - Navigate to the control panel at [http://localhost:8000](http://localhost:8000).
