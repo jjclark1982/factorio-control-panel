@@ -102,6 +102,9 @@ html
                   label Autosave Slots:
                     input(type="text" name="autosaveSlots" placeholder="3")
                   br
+                  label
+                    input(type="text" name="configfile" placeholder="server-settings.example.json")
+                  br
                   label Port:
                     input(type="text" name="port" placeholder="34197")
                   br
@@ -113,3 +116,11 @@ html
                     |  No Auto-pause
                   br
                   button(type="submit") Start Server
+
+          .pure-u-1-3
+            .pane
+              h3 Game Settings
+              - if (runningServer)
+                |   please stop the server before editing settings
+              - else
+              form.pure-form.pure-form-stacked(method="POST" action="save-settings")
