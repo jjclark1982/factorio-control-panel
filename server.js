@@ -21,6 +21,7 @@ paths.mods = paths.base+'/mods';
 paths.exe = paths.base+'/bin/x64/factorio';
 paths.config = paths.base+'/data';
 
+var configLoaded = false;
 var configName = 'server-settings.example.json';
 
 function saveNameToPath(name) {
@@ -28,8 +29,7 @@ function saveNameToPath(name) {
 }
 
 function configPath(con) {
-  console.log(con);
-  if (con === ""){
+  if (con === "" || con === null){
     con = configName;
   }
   return  paths.config + '/' + con;
@@ -39,6 +39,7 @@ var salt = crypto.randomBytes(32);
 var passwordHash = crypto.pbkdf2Sync(process.env.ADMIN_PASSWORD || '', salt, 10000, 512, 'sha512');
 
 var runningServer = null;
+
 
 var app = express();
 
@@ -50,9 +51,20 @@ app.use('/static', express.static(__dirname+'/static'));
 var admin = express.Router();
 app.use('/', admin);
 
-admin.get('/', (req, res, next)=>{
+function sortTags(tags){
+  var tagsf = ""
+  for(i = 0; i < tags.length -1; i++){
+    tagsf = tagsf + tags[i] + ",";
+  };
+  tagsf = tagsf + tags[i]
+  return tagsf
+}
 
-    var serverconfig = [];
+admin.get('/', (req, res, next)=>{
+  var fs = require("fs");
+  var confi = fs.readFileSync(configPath(configName));
+  parsedConfig = JSON.parse(confi);
+  parsedConfig.tags = sortTags(parsedConfig.tags)
 
     var saves = [];
     var mods = [];
@@ -73,6 +85,7 @@ admin.get('/', (req, res, next)=>{
         };
         adminTemplate = pug.compileFile(__dirname+'/admin.pug', options);
         context = {
+            parsedConfig: parsedConfig,
             moment: moment,
             runningServer: runningServer,
             saves: saves,

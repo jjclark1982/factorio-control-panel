@@ -1,4 +1,4 @@
-- title = "Factorio Server Control Panel"
+- title = "Factorio Server Control Panel for " + parsedConfig.name + "!"
 
 doctype html
 html
@@ -106,7 +106,7 @@ html
                     input(type="text" name="configfile" placeholder="server-settings.example.json")
                   br
                   label Port:
-                    input(type="text" name="port" placeholder="34197")
+                    input(type="number" name="port" placeholder="34197")
                   br
                   label
                     input(type="checkbox" name="peerToPeer")
@@ -117,10 +117,42 @@ html
                   br
                   button(type="submit") Start Server
 
-          .pure-u-1-3
+
+        .pure-u-1-3
             .pane
               h3 Game Settings
               - if (runningServer)
-                |   please stop the server before editing settings
+                  |   please stop the server before editing settings
               - else
-              form.pure-form.pure-form-stacked(method="POST" action="save-settings")
+                form.pure-form.pure-form-stacked(method="POST" action="save-settings")
+                  fieldset
+                    label Server Name
+                      input(type="text" name="serverName" value=parsedConfig.name)
+                    br
+                    label Server Description
+                      input(type="text" name="serverDescription" value=parsedConfig.description)
+                    br
+                    label Tags, Seperate with commas
+                      input(type="text" name="serverTags" value=parsedConfig.tags)
+                    br
+                    h4(style="float: left; text-align: left") Visablity
+                    br
+                    br
+                    br
+                    br
+                    label Public
+                      input(type="checkbox" name="serverVisablityPublic" checked=parsedConfig.visibility.public)
+                    br
+                    label LAN
+                      input(type="checkbox" name="serverVisablityLAN" checked=parsedConfig.visibility.lan)
+                    br
+                    h4(style="float: left; text-align: left") Your factorio.com login credentials. Required for games with visibility public
+                    br
+                    label Username
+                    input(type="text" name="serverUsername" value=parsedConfig.username)
+                    br
+                    label Password
+                      input(type="password" name="serverPassword" value=parsedConfig.password)
+                    br
+                    label Token (used instead of a password and username)
+                      input(type="text" name="serverToken" value=parsedConfig.token)
