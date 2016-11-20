@@ -135,6 +135,9 @@ html
                     label Tags, Seperate with commas
                       input(type="text" name="serverTags" value=parsedConfig.tags)
                     br
+                    label Max players (0 for unlimited)
+                      input(type="number" name="serverMaxPlayers" min="0" value=parsedConfig.max_players)
+                    br
                     h4(style="float: left; text-align: left") Visablity
                     br
                     br
@@ -156,3 +159,24 @@ html
                     br
                     label Token (used instead of a password and username)
                       input(type="text" name="serverToken" value=parsedConfig.token)
+                    br
+                    label Game Password
+                      input(type="password" name="serverGamePassword" value=parsedConfig.game_password)
+                    br
+                    label Required user verification
+                      input(type="checkbox" name="serverUserVerification" checked=parsedConfig.require_user_verification)
+                    br
+                    label Max Upload in KB/s (0 for unlimited)
+                      input(type="number" name="serverMaxUpload" value=parsedConfig.max_upload_in_kilobytes_per_second)
+                    br
+                    label Minimum latency in ticks (1 tick = 16ms, 0 for unlimited)
+                      input(type="number" name="serverMinTick" value=parsedConfig.minimum_latency_in_ticks)
+                    br
+                    label Ignore player limit for returning players
+                      input(type="checkbox" name="serverIgnoreRetuningPlayers" checked=parsedConfig.ignore_player_limit_for_returning_players)
+                    br
+                    label Allow Commands
+                      select(name=serverAllowCommands value=parsedConfig.allow_commands)
+                        option false
+                        option admins-only
+                        option true
