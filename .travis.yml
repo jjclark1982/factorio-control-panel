@@ -1,8 +1,5 @@
 sudo: required
 
-services:
-  - docker
-
 language: node_js
 
 node_js:
@@ -14,14 +11,6 @@ env:
 
 before_install:
   - export PANEL_VERSION=$(node -e 'console.log(require("./package").version)')
-  - docker login -e="$DOCKER_EMAIL" -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
-  - docker pull "jjclark/factorio" || echo "ok"
 
 script:
   - npm test
-  - docker build -t "jjclark/factorio" .
-
-after_success:
-  - docker tag "jjclark/factorio" "jjclark/factorio:${FACTORIO_VERSION}"
-  - docker push "jjclark/factorio:${FACTORIO_VERSION}"
-  - docker push "jjclark/factorio"

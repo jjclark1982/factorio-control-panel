@@ -11,7 +11,7 @@ a {
 a:hover {
     color: #e67e23;
 }
-input[type="text"],button,select {
+input[type="text"],input[type="password"],input[type="number"],button,select {
     color: #666;
     background: #ddd;
 }

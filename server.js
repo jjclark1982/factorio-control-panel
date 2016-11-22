@@ -19,8 +19,20 @@ paths.base = process.env.FACTORIO_DIR || '/usr/local/factorio';
 paths.saves = paths.base+'/saves';
 paths.mods = paths.base+'/mods';
 paths.exe = paths.base+'/bin/x64/factorio';
+paths.config = paths.base+'/data';
+
+var configLoaded = false;
+var configName = 'server-settings.example.json';
+
 function saveNameToPath(name) {
     return paths.saves + '/' + name.replace(/^[.]+/g, '_') + '.zip';
+}
+
+function configPath(con) {
+  if (con === "" || con === null){
+    con = configName;
+  }
+  return  paths.config + '/' + con;
 }
 
 var salt = crypto.randomBytes(32);
@@ -28,16 +40,32 @@ var passwordHash = crypto.pbkdf2Sync(process.env.ADMIN_PASSWORD || '', salt, 100
 
 var runningServer = null;
 
+
 var app = express();
 
 app.use(morgan('common'));
 app.use('/saves', express.static(paths.saves));
 app.use('/mods', express.static(paths.mods));
 app.use('/static', express.static(__dirname+'/static'));
+
 var admin = express.Router();
 app.use('/', admin);
 
+function sortTags(tags){
+  var tagsf = ""
+  for(i = 0; i < tags.length -1; i++){
+    tagsf = tagsf + tags[i] + ",";
+  };
+  tagsf = tagsf + tags[i]
+  return tagsf
+}
+
 admin.get('/', (req, res, next)=>{
+  var fs = require("fs");
+  var confi = fs.readFileSync(configPath(configName));
+  parsedConfig = JSON.parse(confi);
+  parsedConfig.tags = sortTags(parsedConfig.tags)
+
     var saves = [];
     var mods = [];
     Promise.all([
@@ -57,13 +85,14 @@ admin.get('/', (req, res, next)=>{
         };
         adminTemplate = pug.compileFile(__dirname+'/admin.pug', options);
         context = {
+            parsedConfig: parsedConfig,
             moment: moment,
             runningServer: runningServer,
             saves: saves,
             mods: mods
         };
         html = adminTemplate(context);
-        res.send(html);        
+        res.send(html);
      });
 });
 
@@ -147,6 +176,7 @@ admin.post('/mods', (req, res, next)=>{
 
 admin.post('/start-server', (req, res, next)=>{
     req.body.saveName = saveNameToPath(req.body.saveName);
+    req.body.configfile = configPath(req.body.configfile);
     if (runningServer != null) {
         res.send("sorry, server is already running");
     }
@@ -156,8 +186,8 @@ admin.post('/start-server', (req, res, next)=>{
             latencyMS: '--latency-ms',
             autosaveInterval: '--autosave-interval',
             autosaveSlots: '--autosave-slots',
-            allowCommands: '--allow-commands',
-            port: '--port'
+            port: '--port',
+            configfile: '--server-settings'
         }
         var supportedFlags = {
             peerToPeer: '--peer-to-peer',

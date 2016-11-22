@@ -1,4 +1,4 @@
-- title = "Factorio Server Control Panel"
+- title = "Factorio Server Control Panel for " + parsedConfig.name + "!"
 
 doctype html
 html
@@ -73,7 +73,7 @@ html
                 fieldset
                   legend Server is Running
                   p= " UDP port "+runningServer.port
-                  p Started 
+                  p Started
                     time(datetime=runningServer.startDate)= moment(runningServer.startDate).fromNow()
                   button(type="submit") Stop
 
@@ -102,11 +102,11 @@ html
                   label Autosave Slots:
                     input(type="text" name="autosaveSlots" placeholder="3")
                   br
-                  label Console Commands
-                    select(name='allowCommands')
-                      option(value='true' selected) Allowed
-                      option(value='false') Disallowed
-                      option(value='admins-only') Admins Only
+                  label
+                    input(type="text" name="configfile" placeholder="server-settings.example.json")
+                  br
+                  label Port:
+                    input(type="number" name="port" placeholder="34197")
                   br
                   label
                     input(type="checkbox" name="peerToPeer")
@@ -116,3 +116,67 @@ html
                     |  No Auto-pause
                   br
                   button(type="submit") Start Server
+
+
+        .pure-u-1-3
+            .pane
+              h3 Game Settings
+              - if (runningServer)
+                  |   please stop the server before editing settings
+              - else
+                form.pure-form.pure-form-stacked(method="POST" action="save-settings")
+                  fieldset
+                    label Server Name
+                      input(type="text" name="serverName" value=parsedConfig.name)
+                    br
+                    label Server Description
+                      input(type="text" name="serverDescription" value=parsedConfig.description)
+                    br
+                    label Tags, Seperate with commas
+                      input(type="text" name="serverTags" value=parsedConfig.tags)
+                    br
+                    label Max players (0 for unlimited)
+                      input(type="number" name="serverMaxPlayers" min="0" value=parsedConfig.max_players)
+                    br
+                    h4(style="float: left; text-align: left") Visablity
+                    br
+                    br
+                    br
+                    br
+                    label Public
+                      input(type="checkbox" name="serverVisablityPublic" checked=parsedConfig.visibility.public)
+                    br
+                    label LAN
+                      input(type="checkbox" name="serverVisablityLAN" checked=parsedConfig.visibility.lan)
+                    br
+                    h4(style="float: left; text-align: left") Your factorio.com login credentials. Required for games with visibility public
+                    br
+                    label Username
+                    input(type="text" name="serverUsername" value=parsedConfig.username)
+                    br
+                    label Password
+                      input(type="password" name="serverPassword" value=parsedConfig.password)
+                    br
+                    label Token (used instead of a password and username)
+                      input(type="text" name="serverToken" value=parsedConfig.token)
+                    br
+                    label Game Password
+                      input(type="password" name="serverGamePassword" value=parsedConfig.game_password)
+                    br
+                    label Required user verification
+                      input(type="checkbox" name="serverUserVerification" checked=parsedConfig.require_user_verification)
+                    br
+                    label Max Upload in KB/s (0 for unlimited)
+                      input(type="number" name="serverMaxUpload" value=parsedConfig.max_upload_in_kilobytes_per_second)
+                    br
+                    label Minimum latency in ticks (1 tick = 16ms, 0 for unlimited)
+                      input(type="number" name="serverMinTick" value=parsedConfig.minimum_latency_in_ticks)
+                    br
+                    label Ignore player limit for returning players
+                      input(type="checkbox" name="serverIgnoreRetuningPlayers" checked=parsedConfig.ignore_player_limit_for_returning_players)
+                    br
+                    label Allow Commands
+                      select(name=serverAllowCommands value=parsedConfig.allow_commands)
+                        option false
+                        option admins-only
+                        option true
